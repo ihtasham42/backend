@@ -84,7 +84,11 @@ pub async fn edit(
             .map(|x| x.contains(&v0::FieldsMember::Timeout))
             .unwrap_or_default()
     {
-        permissions.throw_if_lacking_channel_permission(ChannelPermission::TimeoutMembers)?;
+        if user.id != member.id.user {
+            permissions.throw_if_lacking_channel_permission(ChannelPermission::TimeoutMembers)?;
+        } else {
+            return Err(create_error!(InvalidOperation));
+        }
     }
 
     // Resolve our ranking
